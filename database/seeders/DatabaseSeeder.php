@@ -15,11 +15,6 @@ class DatabaseSeeder extends Seeder
         (new CategorySeeder())->run();
         (new EventSeeder())->run();
         (new ImageSeeder())->run();
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        (new UserSeeder())->run();
     }
 }
