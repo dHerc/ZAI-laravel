@@ -1,0 +1,510 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ZAI",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://zai-dh.azurewebsites.net/"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/events": {
+      "get": {
+        "tags": [
+          "default"
+        ],
+        "summary": "zwraca listę wydarzeń",
+        "parameters": [
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "data od której wydarzenia będą wyświetlane",
+            "example": "2007-12-15"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "start",
+                "end",
+                "any"
+              ]
+            },
+            "description": "typ filtrowania wydarzeń: <br> start - data rozpoczęcia musi przypadać pomiędzy podanymi datami <br> end - data zakończenia musi przypadać pomiędzy podanymi datami <br> any - jakikolwiek dzień między początkiem a końcem wydarzenia musi przypadać pomiędzy podanymi datami",
+            "example": "end"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "data do której wydarzenia będą wyświetlane",
+            "example": "2010-12-15"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "tworzy wydarzenie",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "description": "obraz przypisany do wydarzenia (akceptowane rozszerzenia: png, jpg)",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "nazwa wydarzenia",
+                    "example": "Test"
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "description": "data rozpoczęcia wydarzenia",
+                    "example": "2023-02-01"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "description": "data zakończenia wydarzenia",
+                    "example": "2023-02-01"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "opis wydarzenia",
+                    "example": "desc"
+                  },
+                  "category_id": {
+                    "type": "integer",
+                    "description": "id kategorii wydarzenia",
+                    "example": "1"
+                  }
+                },
+                "required": [
+                  "name",
+                  "start_date",
+                  "end_date",
+                  "description",
+                  "category_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "tags": [
+          "default"
+        ],
+        "summary": "zwraca wydarzenie",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id wydarzenia",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "edytuje wydarzenie",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "_method": {
+                    "type": "string",
+                    "description": "żeby wysyłanie plików było możliwe zapytanie musi być wysłane metodą post z polem _method ustawionym na patch",
+                    "example": "patch"
+                  },
+                  "image": {
+                    "type": "string",
+                    "description": "obraz przypisany do wydarzenia, wysłanie tego pola jako puste usuwa aktualny obraz",
+                    "format": "binary"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "nazwa wydarzenia",
+                    "example": "TestValue"
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "description": "data rozpoczęcia wydarzenia",
+                    "example": "2023-02-01"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "description": "data zakończenia wydarzenia",
+                    "example": "2023-02-01"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "opis wydarzenia",
+                    "example": "desc"
+                  },
+                  "category_id": {
+                    "type": "integer",
+                    "description": "id kategorii wydarzenia",
+                    "example": "1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id wydarzenia",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "default"
+        ],
+        "summary": "usuwa wydarzenie",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id wydarzenia",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/categories/{id}": {
+      "get": {
+        "tags": [
+          "default"
+        ],
+        "summary": "zwraca kategorię",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id kategorii",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "default"
+        ],
+        "summary": "edytuje kategorię",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "nazwa kategorii",
+                    "example": "Test"
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "kolor przypisany do kategorii w notacji heksadecymalnej",
+                    "example": "#999"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id kategorii",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": [
+          "default"
+        ],
+        "summary": "zwraca listę kategorii",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "tworzy kategorię",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "nazwa kategorii",
+                    "example": "Test"
+                  },
+                  "color": {
+                    "type": "string",
+                    "description": "kolor przypisany do kategorii w notacji heksadecymalnej",
+                    "example": "#999"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/login": {
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "loguje użytkowika i zwraca jego token",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "email użytkownika",
+                    "example": "test@test.pl"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "hasło użytkownika",
+                    "example": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/register": {
+      "post": {
+        "tags": [
+          "default"
+        ],
+        "summary": "rejestruje użytkownika",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "email użytkownika",
+                    "example": "test@test.pl"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "hasło użytkownika",
+                    "example": "password"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "description": "potwierdzenie hasła",
+                    "example": "password"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "nazwa użytkownika",
+                    "example": "test"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/profile/change_password": {
+      "put": {
+        "tags": [
+          "default"
+        ],
+        "summary": "zmienia hasło użytkownika",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "current_password": {
+                    "type": "string",
+                    "description": "aktualne hasło",
+                    "example": "password"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "nowe hasło",
+                    "example": "password_new"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "description": "potwierdzenie nowego hasła",
+                    "example": "password_new"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
