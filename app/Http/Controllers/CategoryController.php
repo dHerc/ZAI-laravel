@@ -61,6 +61,7 @@ class CategoryController extends Controller
     {
         $data = $request->all();
         $category->update($data);
+        $category->refresh();
         return $category;
     }
 
