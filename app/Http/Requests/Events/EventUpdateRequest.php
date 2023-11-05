@@ -17,7 +17,7 @@ class EventUpdateRequest extends FormRequest
             'name' => ['string', 'min:1', 'max:256'],
             'start_date' => ['date', 'date_format:Y-m-d'],
             'end_date' => ['date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
-            'description' => ['string', 'max:65536'],
+            'description' => ['string', 'max:15000'],
             'category_id' => ['integer', 'exists:categories,id'],
             'image' => ['nullable', 'mimes:png,jpg']
         ];

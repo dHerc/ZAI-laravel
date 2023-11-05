@@ -17,7 +17,7 @@ class EventCreateRequest extends FormRequest
             'name' => ['required', 'string', 'min:1', 'max:256'],
             'start_date' => ['required', 'date', 'date_format:Y-m-d'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date', 'date_format:Y-m-d'],
-            'description' => ['required', 'string', 'max:65536'],
+            'description' => ['required', 'string', 'max:15000'],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'image' => ['mimes:png,jpg']
         ];

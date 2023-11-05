@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('description');
+            $table->string('description', 15000);
             $table->foreignId('category_id')
                 ->references('id')
                 ->on('categories')
