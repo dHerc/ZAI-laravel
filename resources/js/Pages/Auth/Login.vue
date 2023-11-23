@@ -6,6 +6,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import {ref} from "vue";
+import {loadDarkMode} from "@/Helpers/DarkMode";
 
 defineProps<{
     canResetPassword?: boolean;
@@ -18,6 +20,8 @@ const form = useForm({
     remember: false,
 });
 
+const darkMode = ref(loadDarkMode())
+
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => {
@@ -28,7 +32,7 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
+    <GuestLayout :class="{dark: darkMode}">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -37,12 +41,12 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel class="dark:text-gray-200" for="email" value="Email" />
 
                 <TextInput
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200"
                     v-model="form.email"
                     required
                     autofocus
@@ -53,12 +57,12 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <InputLabel class="dark:text-gray-200" for="password" value="Password" />
 
                 <TextInput
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full dark:bg-gray-700 dark:text-gray-200"
                     v-model="form.password"
                     required
                     autocomplete="current-password"
@@ -70,20 +74,19 @@ const submit = () => {
             <div class="block mt-4">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-200">Remember me</span>
                 </label>
             </div>
 
             <div class="flex items-center justify-end mt-4">
                 <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    :href="route('register')"
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:text-gray-300"
                 >
-                    Forgot your password?
+                  Don't have an account?
                 </Link>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <PrimaryButton class="ml-4 dark:bg-gray-700" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </PrimaryButton>
             </div>

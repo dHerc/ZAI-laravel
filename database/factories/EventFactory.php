@@ -18,7 +18,7 @@ class EventFactory extends Factory
      */
     public function definition(): array
     {
-        $start = Carbon::createFromFormat('Y-m-d', $this->faker->date);
+        $start = Carbon::now()->addDays($this->faker->numberBetween(-15, 15));
         $end = $start->copy()->addDays($this->faker->numberBetween(0, 30));
         return [
             'name' => $this->faker->name,

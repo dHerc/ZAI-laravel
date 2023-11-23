@@ -21,11 +21,11 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(?string $mode = 'timeline'): Response
     {
         $events = Event::all()->load(['category', 'image']);
         $categories = Category::all();
-        return Inertia::render('Events/List', [
+        return Inertia::render($mode === 'table' ? 'Events/Table' : 'Events/List', [
             'events' => $events,
             'categories' => $categories
         ]);
@@ -33,7 +33,7 @@ class EventController extends Controller
 
     public function list(EventListRequest $request): Collection
     {
-        $query = Event::query();
+        $query = Event::query()->with(['image', 'category']);
         /** @var EventSearchMode|null $mode */
         $mode = EventSearchMode::tryFrom($request->query('mode'));
         $dateFrom = $request->query('dateFrom');
@@ -91,7 +91,7 @@ class EventController extends Controller
             Storage::disk('images')->put($filename, $file->getContent());
             Image::query()->create(['filename' => $filename, 'event_id' => $event->id]);
         }
-        return $event->refresh();
+        return $event->refresh()->load(['image', 'category']);
     }
 
     /**

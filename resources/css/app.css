@@ -4,6 +4,20 @@
 
 @media print {
     nav {
-        display:none
+        display: none;
     }
+    .print-expand {
+        height: unset !important;
+        overflow-y: auto !important;
+    }
+    .print-hide {
+        display: none !important;
+    }
+    .v-data-table-footer {
+        display: none !important;
+    }
+}
+
+html {
+    overflow-y: auto !important;
 }

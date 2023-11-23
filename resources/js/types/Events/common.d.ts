@@ -6,9 +6,8 @@ export type Event = {
     start_date: string
     end_date: string
     description: string
-    category_id: number
     category: Category
-    image: Image
+    image?: Image
 }
 
 export type Image = {

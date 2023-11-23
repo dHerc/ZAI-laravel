@@ -19,10 +19,10 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return redirect(route('events'));
+    return redirect(route('events', ['mode' => 'timeline']));
 });
 
-Route::get('events', [EventController::class, 'index'])->name('events');
+Route::get('events/{mode?}', [EventController::class, 'index'])->where('mode', 'timeline|table')->name('events');
 
 Route::get('categories', [CategoryController::class, 'index'])->name('categories');
 Route::get('categories/{category}/edit', [CategoryController::class, 'edit']);

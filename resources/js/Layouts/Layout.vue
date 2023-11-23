@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onBeforeUnmount, ref} from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-const darkMode = ref(false);
+import {loadDarkMode, saveDarkMode} from "@/Helpers/DarkMode";
 
+const props = defineProps(['modelValue'])
+const emits = defineEmits(['update:modelValue'])
+
+const darkMode = ref(props.modelValue ?? loadDarkMode());
 const showingNavigationDropdown = ref(false);
+const overscroll = window.location.href.includes('timeline') ? 'none' : 'auto';
+document.documentElement.style.overscrollBehavior = overscroll;
+
+onBeforeUnmount(() => {
+    document.documentElement.style.overscrollBehavior = '';
+})
+function switchMode() {
+    darkMode.value = !darkMode.value
+    saveDarkMode(darkMode.value)
+    emits('update:modelValue', darkMode.value)
+}
 </script>
 
 <template>
     <div :class="{ dark: darkMode }">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-800">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="dark:bg-gray-900">
@@ -22,17 +37,20 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('events')">
+                                <Link :href="route('events', {mode: 'timeline'})">
                                     <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
+                                        class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
                                     />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('events')" :active="route().current('events')">
-                                    <span class="dark:text-gray-400 dark:hover:text-white">Events</span>
+                                <NavLink :href="route('events', {mode: 'timeline'})" :active="route().current('events', {mode: 'timeline'})">
+                                    <span class="dark:text-gray-400 dark:hover:text-white">Events (timeline)</span>
+                                </NavLink>
+                                <NavLink :href="route('events', {mode: 'table'})" :active="route().current('events', {mode: 'table'})">
+                                    <span class="dark:text-gray-400 dark:hover:text-white">Events (table)</span>
                                 </NavLink>
                                 <NavLink :href="route('categories')" :active="route().current('categories')">
                                     <span class="dark:text-gray-400 dark:hover:text-white">Categories</span>
@@ -42,12 +60,16 @@ const showingNavigationDropdown = ref(false);
                         <div class="hidden sm:flex sm:items-center sm:ml-6" v-if="$page.props.auth.user">
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
-                                <Dropdown align="right" width="48">
+                                <button class="mx-5" v-on:click="switchMode" style="display: inline-block">
+                                    <v-icon v-if="darkMode" class="text-gray-400 hover:text-gray-white" icon="mdi-weather-sunny"/>
+                                    <v-icon v-else class="text-gray-600 hover:text-gray-900" icon="mdi-weather-night"/>
+                                </button>
+                                <Dropdown align="right" width="48" style="display: inline-block" content-classes="bg-gray-50 dark:bg-gray-800">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
                                                 {{ $page.props.auth.user.name }}
 
@@ -68,8 +90,8 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
+                                        <DropdownLink class="dark:text-gray-50" :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink class="dark:text-gray-50" :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>
                                     </template>
@@ -86,9 +108,8 @@ const showingNavigationDropdown = ref(false);
                             <Link
                                 :href="route('register')"
                                 class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                            >Register</Link
-                            >
-                            <button class="mx-5" v-on:click="darkMode = !darkMode">
+                            >Register</Link>
+                            <button class="mx-5" v-on:click="switchMode">
                                 <v-icon v-if="darkMode" class="text-gray-400 hover:text-gray-white" icon="mdi-weather-sunny"/>
                                 <v-icon v-else class="text-gray-600 hover:text-gray-900" icon="mdi-weather-night"/>
                             </button>
@@ -159,14 +180,14 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
+            <header class="bg-gray-50 dark:bg-gray-900 shadow dark:shadow-white" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main style="">
                 <slot />
             </main>
         </div>
