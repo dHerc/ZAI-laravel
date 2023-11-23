@@ -6,7 +6,7 @@ import Modal from '@/Components/Modal.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 defineProps<{
   darkMode: boolean
@@ -58,7 +58,7 @@ const closeModal = () => {
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6" :class="{'bg-gray-800': darkMode}">
-                <h2 class="text-lg font-medium text-gray-900" :class="{'text-gray-50': darkMode}">
+                <h2 class="text-lg font-medium" :class="{'text-gray-900': !darkMode, 'text-gray-50': darkMode}">
                     Are you sure you want to delete your account?
                 </h2>
 
@@ -85,7 +85,7 @@ const closeModal = () => {
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <PrimaryButton :class="{'bg-gray-700': darkMode}" @click="closeModal"> Cancel </PrimaryButton>
+                    <SecondaryButton :dark-mode="darkMode" @click="closeModal"> Cancel </SecondaryButton>
 
                     <DangerButton
                         class="ml-3"

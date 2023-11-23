@@ -42,12 +42,18 @@ const form = ref({
 })
 
 const imageUrl: Ref<string | null> = ref(event.image ? `/images/${event.image.filename}` : null)
+const endDate = ref<{validate: () => undefined}|null>(null);
 
 function validateEndDate(date: string) {
     if (!form.value.start_date) {
-        return 'Field is required'
+        return true
     }
     return date >= form.value.start_date || 'End date cannot be before start date'
+}
+
+function revalidateEndDate(): boolean {
+    endDate.value?.validate()
+    return true
 }
 
 function recalculateCategory(id: number) {
@@ -153,13 +159,14 @@ function removeImage() {
                     <v-text-field
                         type="date"
                         v-model="form.start_date"
-                        :rules="[required()]"
+                        :rules="[required(), revalidateEndDate]"
                         :disabled="!editable"
                     />
                     <v-icon icon="mdi-arrow-right-bold" class="px-10" style="vertical-align: top; padding-top: 30px"></v-icon>
                     <v-text-field
                         type="date"
                         v-model="form.end_date"
+                        ref="endDate"
                         :rules="[required(), validateEndDate]"
                         :disabled="!editable"
                     />
